@@ -29,6 +29,13 @@ export default class ReplaceRulesEditProvider {
         });
     }
 
+    public pickRulesetAndPaste() {
+      let rulesets = this.getQPRulesets();
+      vscode.window.showQuickPick(rulesets).then(qpItem => {
+          if (qpItem) this.pasteReplaceRuleset(qpItem.key);
+      });
+    }
+
     private getQPRules(): any[] {
         let language = this.textEditor.document.languageId;
         let configRules = this.configRules;
@@ -45,7 +52,7 @@ export default class ReplaceRulesEditProvider {
                         description: "",
                         key: r
                     });
-                } catch (err) {
+                } catch (err: any) {
                     Window.showErrorMessage('Error parsing rule ' + r + ': ' + err.message);
                 }
             }
@@ -65,7 +72,7 @@ export default class ReplaceRulesEditProvider {
                         description: "",
                         key: r
                     });
-                } catch (err) {
+                } catch (err: any) {
                     Window.showErrorMessage('Error parsing ruleset ' + r + ': ' + err.message);
                 }
             }
@@ -82,7 +89,7 @@ export default class ReplaceRulesEditProvider {
             }
             try {
                 this.doReplace(new ReplaceRule(rule));
-            } catch (err) {
+            } catch (err: any) {
                 Window.showErrorMessage('Error executing rule ' + ruleName + ': ' + err.message);
             }
         }
@@ -104,7 +111,7 @@ export default class ReplaceRulesEditProvider {
                     }
                 });
                 if (ruleObject) this.doReplace(ruleObject);
-            } catch (err) {
+            } catch (err: any) {
                 Window.showErrorMessage('Error executing ruleset ' + rulesetName + ': ' + err.message);
             }
         }
@@ -119,10 +126,32 @@ export default class ReplaceRulesEditProvider {
             }
             try {
                 this.doPasteReplace(new ReplaceRule(rule));
-            } catch (err) {
+            } catch (err: any) {
                 Window.showErrorMessage('Error executing rule ' + ruleName + ': ' + err.message);
             }
         }
+    }
+
+    public pasteReplaceRuleset(rulesetName: string) {
+      let language = this.textEditor.document.languageId;
+      let ruleset = this.configRulesets[rulesetName];
+      if (ruleset) {
+          let ruleObject = new ReplaceRule({find: ''});
+          try {
+              ruleset.rules.forEach((r: string) => {
+                  let rule = this.configRules[r];
+                  if (rule) {
+                      if (Array.isArray(rule.languages) && rule.languages.indexOf(language) === -1) {
+                          return;
+                      }
+                      ruleObject.appendRule(this.configRules[r])
+                  }
+              });
+              if (ruleObject) this.doPasteReplace(ruleObject);
+          } catch (err: any) {
+              Window.showErrorMessage('Error executing ruleset ' + rulesetName + ': ' + err.message);
+          }
+      }
     }
 
     private async doReplace(rule: ReplaceRule) {

@@ -6,11 +6,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('replacerules.runRule', runSingleRule));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('replacerules.runRuleset', runRuleset));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('replacerules.pasteAndReplace', pasteReplace));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('replacerules.pasteAndReplaceRuleset', pasteReplaceRuleset));
     context.subscriptions.push(vscode.commands.registerCommand('replacerules.stringifyRegex', stringifyRegex));
 }
 
 export function deactivate() {
-    
+
 }
 
 function runSingleRule(textEditor: vscode.TextEditor, _edit: vscode.TextEditorEdit, args?: any) {
@@ -46,6 +47,17 @@ function pasteReplace(textEditor: vscode.TextEditor, _edit: vscode.TextEditorEdi
     return;
 }
 
+function pasteReplaceRuleset(textEditor: vscode.TextEditor, _edit: vscode.TextEditorEdit, args?: any) {
+  let editP = new ReplaceRulesEditProvider(textEditor);
+  if (args) {
+      let rulesetName = args['rulesetName'];
+      editP.pasteReplaceRuleset(rulesetName);
+  } else {
+      editP.pickRulesetAndPaste();
+  }
+  return;
+}
+
 function stringifyRegex() {
     let options = { prompt: 'Enter a valid regular expression.', placeHolder: '(.*)' };
     vscode.window.showInputBox(options).then(input => {
@@ -61,7 +73,7 @@ function stringifyRegex() {
                         vscode.env.clipboard.writeText(jString);
                     }
                 });
-            } catch (err) {
+            } catch (err: any) {
                 vscode.window.showErrorMessage(err.message);
             }
         }
