@@ -14,10 +14,11 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
         "strict": true,
-		"alwaysStrict": true
+		"alwaysStrict": true,
+    "skipLibCheck": true
     },
     "exclude": [
-        "node_modules",
-        ".vscode-test"
+      "node_modules",
+      ".vscode-test"
     ]
 }
