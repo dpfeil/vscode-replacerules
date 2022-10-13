@@ -2,7 +2,7 @@
     "name": "replacerulesextended",
     "displayName": "Replace Rules Extended",
     "description": "Create search/replace rules using Javascript regular expressions",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "publisher": "bhughes339",
     "engines": {
         "vscode": "^1.33.0"
@@ -47,9 +47,9 @@
                 "category": "Replace Rules"
             },
             {
-              "command": "replacerules.pasteAndReplaceRuleset",
-              "title": "Run Replace Ruleset on clipboard and paste...",
-              "category": "Replace Rules"
+                "command": "replacerules.pasteAndReplaceRuleset",
+                "title": "Run Replace Ruleset on clipboard and paste...",
+                "category": "Replace Rules"
             },
             {
                 "command": "replacerules.stringifyRegex",
